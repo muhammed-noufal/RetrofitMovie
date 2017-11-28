@@ -34,21 +34,17 @@ For this tutorial we will use The TMDb API. In order to use this API it is neces
 
 6. Create a class named Movie.java under model package.
 
+
 ***********Movie.java************
 *********************************
 package com.ark.retrofitmovie.model;
-
 import java.util.List;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
 /**
  * Created by noufal on 28/11/17.
  */
-
 public class Movie {
-
     @SerializedName("vote_count")
     @Expose
     private Integer voteCount;
@@ -203,27 +199,25 @@ public class Movie {
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
-
 }
-
 ****************************************************
+
 
 
 7. Also we need to create MovieResponse.java class, since we have some extra fields like page number. This class contains all fetched movies and extra information. Create MovieResponse.java under model package.
 
+
+
 ***********MovieResponse.java************
 *****************************************
 package com.ark.retrofitmovie.model;
-
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 /**
  * Created by noufal on 28/11/17.
  */
-
 public class MoviesResponse {
-
     @SerializedName("page")
     @Expose
     private Integer page;
@@ -268,25 +262,29 @@ public class MoviesResponse {
     public void setResults(List<Movie> results) {
         this.results = results;
     }
-
 }
-
 *****************************************
+
+
+
+
+
+
+
 
 
 8. To send network requests to an API, we need to use the Retrofit Builder class and specify the base URL for the service. So, create a class named ApiClient.java under rest package.
 
 Here BASE_URL – it is basic URL of our API. We will use this URL for all requests later.
 
+
+
+
 ****************ApiClient.java***********************
 ----------------------------------------------------
-
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
- 
- 
-public class ApiClient {
- 
+import retrofit2.converter.gson.GsonConverterFactory; 
+public class ApiClient { 
     public static final String BASE_URL = "http://api.themoviedb.org/3/";
     private static Retrofit retrofit = null;
  
@@ -303,26 +301,29 @@ public class ApiClient {
 }
 *********************************************************************
 
+
+
+
+
 The endpoints are defined inside of an interface using special retrofit annotations to encode details about the parameters and request method. In addition, the return value is always a parameterized Call<T> object such as Call<MovieResponse>. For instance, the interface defines each endpoint in the following way.
 
 9. Create ApiInterface.java under rest package.
 
+
+
+
+
 ****************************ApiInterface.java********************
 -----------------------------------------------------------------
 package com.ark.retrofitmovie.rest;
-
 import com.ark.retrofitmovie.model.MoviesResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-
-
 /**
  * Created by noufal on 28/11/17.
  */
-
-
 public interface ApiInterface {
     @GET("movie/top_rated")
     Call<MoviesResponse> getTopRatedMovies(@Query("api_key") String apiKey);
@@ -331,6 +332,8 @@ public interface ApiInterface {
     Call<MoviesResponse> getMovieDetails(@Path("id") int id, @Query("api_key") String apiKey);
 }
 ********************************************************************
+        
+        
 
 Each endpoint specifies an annotation of the HTTP method (GET, POST, etc.) and the parameters of this method can also have special annotations (@Query, @Path, @Body etc.)
 
@@ -345,19 +348,22 @@ Take a look to other annotations:
 @Header – specifies the header with the value of the annotated parameter
 
 
+
+
 10. Let’s make the first request from our MainActivity. If we want to consume the API asynchronously, we call the service as follows. Open the MainActivity.java and do the below changes.
 
 Make sure that you replaced API_KEY with yours.
 
+
+
+
+
 ******************MainActivity.java*************************
 -----------------------------------------------------------
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
- 
+    private static final String TAG = MainActivity.class.getSimpleName(); 
     // TODO - insert your themoviedb.org API KEY here
-    private final static String API_KEY = "";
- 
- 
+    private final static String API_KEY = ""; 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -388,11 +394,21 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 **************************************************************
+
+
+
+
+
+
+
 Retrofit will download and parse the API data on a background thread, and then return the results back to the UI thread via the onResponse or onFailure method.
 
 Congratulations! We have created our first rest client. Let’s create some UI in order to see our results
 
 11. Let’s create ListView for fetched results. We will use RecyclerView for it. First of all, add it to the gradle.gradle
+
+
+
 
 build.gradle
 dependencies {
@@ -404,9 +420,19 @@ dependencies {
 }
 
 
+
+
+
+
+
 In order to show fetched items we need to create layout, which will show all data. We need 4 TextView and 1 ImageView for star image.
 
 12. Open colors.xml and add the below color values.
+
+
+
+
+
 
 colors.xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -424,7 +450,19 @@ colors.xml
     <color name="colorGreyLight">#8A8A8A</color>
 </resources>
 
+
+
+
+
+
+
 13. Create a layout named star.xml under res drawable with the below content.
+
+
+
+
+
+
 
 star.xml
 <!-- drawable/star.xml -->
@@ -438,7 +476,19 @@ star.xml
         android:pathData="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" />
 </vector>
 
+
+
+
+
+
+
 14. Create a layout named list_item_movie.xml under res layout.
+
+
+
+
+
+
 
 list_item_movie.xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -516,12 +566,26 @@ list_item_movie.xml
 
 </LinearLayout>
 
+
+
+
+
+
+
+
 15. Adapter is a common pattern which helps to bind view and data, so let’s implement adapter for this. Create a class named MoviesAdapter.java under adapter package.
+
+
+
+
+
+
+
+
 
 ***************MoviesAdapter.java***********************
 ---------------------------------------------------------
 package com.ark.retrofitmovie.adapter;
-
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
@@ -541,13 +605,10 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 import static com.ark.retrofitmovie.rest.ApiClient.IMAGE_URL;
-
 /**
  * Created by noufal on 28/11/17.
  */
-
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
-
     private List<Movie> movies;
     private int rowLayout;
     private Context context;
@@ -605,7 +666,37 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 }
 **************************************************************
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 16. Open MainActivity.java and modify the code as below.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 *******************MainActivity.java************************
 ------------------------------------------------------------
@@ -633,7 +724,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private final static String API_KEY = "7e8f60e325cd06e164799af1e317d7a7";
@@ -674,6 +764,14 @@ public class MainActivity extends AppCompatActivity {
 }
 
 ************************************************************************
+
+
+
+
+
+
+
+
 
 
 #############    Thank You    ###################
